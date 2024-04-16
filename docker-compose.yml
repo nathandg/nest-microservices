@@ -1,27 +1,26 @@
-version: "3"
 services:
 
-  service-a:
-    container_name: service-a
+  ms-payments:
+    container_name: ms-payments
     build:
       context: .
       args:
-        - APP=service-a
-    restart: always
-    ports:
-      - "3000:3000"
-    volumes:
-      - .:/usr/src/app
-  
-  service-b:
-    container_name: service-b
-    build:
-      context: .
-      args:
-        - APP=service-b
+        - APP=ms-payments
     restart: always
     ports:
       - "3001:3000"
+    volumes:
+      - .:/usr/src/app
+
+  ms-products:
+    container_name: ms-products
+    build:
+      context: .
+      args:
+        - APP=ms-products
+    restart: always
+    ports:
+      - "3000:3000"
     volumes:
       - .:/usr/src/app
   
