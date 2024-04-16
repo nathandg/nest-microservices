@@ -1,0 +1,22 @@
+version: "3"
+services:
+  
+  service-a:
+    container_name: service-a
+    build:
+      context: .
+      args:
+        - APP=service-a
+    restart: always
+    ports:
+      - "3000:3000"
+  
+  service-b:
+    container_name: service-b
+    build:
+      context: .
+      args:
+        - APP=service-b
+    restart: always
+    ports:
+      - "3001:3000"
