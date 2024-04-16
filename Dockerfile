@@ -7,7 +7,5 @@ COPY ./package*.json ./
 RUN npm install
 COPY . .
 
-RUN npm run build ${APP}
-ENV APP_MAIN_FILE=dist/apps/${APP}/main
-
-CMD node ${APP_MAIN_FILE}.js
+ENV APP=${APP}
+CMD npm run start:dev $APP
