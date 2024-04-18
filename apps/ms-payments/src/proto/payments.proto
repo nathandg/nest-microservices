@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+package payments;
+
+service PaymentService {
+  rpc PayOrder(PayOrderRequest) returns (PayOrderResponse);
+}
+
+message PayOrderRequest {
+  double value = 1;
+  string cpf = 2;
+  string cardNumber = 3;
+}
+
+message PayOrderResponse {
+  bool success = 1;
+  string message = 2;
+}
