@@ -41,7 +41,10 @@ export class ProductsController {
   }
 
   @Post('buy/:id')
-  buy(@Param('id') id: string) {
-    return this.productsService.buy(id);
+  buy(
+    @Param('id') id: string,
+    @Body() { cpf, cardNumber }: { cpf: string; cardNumber: string },
+  ) {
+    return this.productsService.buy(id, cpf, cardNumber);
   }
 }

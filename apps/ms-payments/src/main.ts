@@ -11,7 +11,7 @@ async function bootstrap() {
     options: {
       url: '0.0.0.0:50051',
       package: 'payments',
-      protoPath: join(__dirname, 'proto/payments.proto'),
+      protoPath: join(__dirname, '../../../proto/payments.proto'),
     },
   });
 

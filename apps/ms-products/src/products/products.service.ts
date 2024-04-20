@@ -1,12 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  OnModuleInit,
+} from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { randomUUID } from 'crypto';
+import { ClientGrpc } from '@nestjs/microservices';
+import { payments } from 'proto/payments';
 
 @Injectable()
-export class ProductsService {
+export class ProductsService implements OnModuleInit {
   private products: Product[] = [];
+  private paymentsService: payments.PaymentService;
+
+  constructor(@Inject('PAYMENTS_PACKAGE') private paymentsClient: ClientGrpc) {}
+
+  onModuleInit() {
+    this.paymentsService =
+      this.paymentsClient.getService<payments.PaymentService>('PaymentService');
+  }
 
   create(createProductDto: CreateProductDto) {
     const product = { id: randomUUID(), ...createProductDto };
@@ -40,8 +55,14 @@ export class ProductsService {
     return product;
   }
 
-  buy(id: string) {
+  buy(id: string, cpf: string, cardNumber: string) {
     const product = this.findOne(id);
-    if (!product) return NotFoundException;
+    if (!product) throw new NotFoundException('Product not found');
+    const data: payments.PayOrderRequest = {
+      value: product.price,
+      cpf,
+      cardNumber,
+    };
+    return this.paymentsService.payOrder(data);
   }
 }

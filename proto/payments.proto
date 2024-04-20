@@ -1,6 +1,5 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
 package payments;
 
 service PaymentService {
@@ -17,3 +16,4 @@ message PayOrderResponse {
   bool success = 1;
   string message = 2;
 }
+
