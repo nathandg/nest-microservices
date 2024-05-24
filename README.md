@@ -1,73 +1,60 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Nest.js Microservices with gRPC
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This repository contains a simple implementation of microservices using gRPC with Nest.js, structured as a monorepo and orchestrated with Docker Compose.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+>This project follows the monorepo structure provided by Nest.js, for more information, refer to the [official documentation](https://docs.nestjs.com/cli/monorepo#monorepo-mode).
 
-## Description
+## Services
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+> The project consists of two services: `ms-payments` and `ms-products` located in the `apps` directory.
 
-## Installation
+### `ms-products`
+
+- **Type:** REST API and gRPC Client
+- **Functionality:** The `ms-products` service provides a `/products/buy/:id` route that interacts with the `ms-payments` service and returns the response.
+
+### `ms-payments`
+
+- **Type:** gRPC Server
+- **Functionality:** This service exposes a `payOrder` method that handles basic validations and returns a success response.
+
+### Diagram
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client
+    participant ms-products
+    participant ms-payments
+
+    Client->>+ms-products: POST /products/buy/:id
+    ms-products->>+ms-payments: gRPC payOrder(order)
+    ms-payments-->>-ms-products: gRPC success response
+    ms-products-->>-Client: success response
+```
+## API
+
+> The `api` directory contains a `.rest` file with sample requests that can be executed using the REST Client extension for Visual Studio Code.
+
+## Prerequisites
+
+Before running the project, ensure you have the following dependencies installed on your machine:
+
+- [Node.js](https://nodejs.org/)
+- [Docker](https://www.docker.com/)
+
+## Getting Started
+
+To start the project, execute the following commands:
 
 ```bash
-$ npm install
+$ npm install && docker compose up -d
 ```
 
-## Running the app
+## Additional Resources
+
+To generate TypeScript types from the `.proto` file `proto/payment.proto`, the `nestjs-proto-gen-ts` package was utilized. To replicate this, run the following command from the project's root directory:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+$ npx tsproto --path ./proto
 ```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
